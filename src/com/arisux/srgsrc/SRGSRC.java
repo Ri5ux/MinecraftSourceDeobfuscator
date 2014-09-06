@@ -4,6 +4,13 @@ public class SRGSRC
 {
 	public static void main(String[] args)
 	{
-		Loader loader = new Loader(args);
+		try
+		{
+			Loader loader = new Loader(args);
+		} catch (Exception e)
+		{
+			System.out.println("A fatal error occurred, cannot continue: " + e);
+			e.printStackTrace();
+		}
 	}
 }

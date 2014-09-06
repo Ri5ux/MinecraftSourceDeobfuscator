@@ -5,23 +5,37 @@ public class Loader
 	private FrameMain mainInterface;
 	private Remapper remapper;
 	private boolean auto = false;
-	boolean nogui = false;
-	private String srgLocation = "", srcLocation = "";
+	public boolean nogui = false;
+	private String srgLocation = ".\\srg\\", srcLocation = ".\\src\\";
 
-	public Loader(String[] args)
+	public Loader(String[] args) throws Exception
 	{
 		StringBuilder builder = new StringBuilder();
 
 		for (int i = 0; i < args.length; i++)
 		{
 			String arg = args[i];
+			
+			if (arg.equals("-help"))
+			{
+				this.sendToConsole("SRGSRC Mod Development Tool - Copyright (C) 2014 Arisux");
+				this.sendToConsole("SYNTAX: -a <SRG DIRECTORY> <SRC DIRECTORY> (Auto runs the tool with the provided directories)");
+				this.sendToConsole("SYNTAX: -nogui (Runs the tool in console mode)");
+				this.sendToConsole("SYNTAX: -help (Shows help)");
+				System.exit(0);
+			}
 
 			if (arg.equals("-a"))
 			{
-				auto = true;
-
-				this.srcLocation = args[i + 1];
-				this.srgLocation = args[i + 2];
+				if (args.length >= 3)
+				{
+					this.auto = true;
+					this.srgLocation = args[i + 1];
+					this.srcLocation = args[i + 2];
+				} else
+				{
+					this.sendToConsole("Not enough arguments provided. SYNTAX: -a <SRG DIRECTORY> <SRC DIRECTORY>");
+				}
 			}
 
 			if (arg.equals("-nogui"))
@@ -30,17 +44,20 @@ public class Loader
 				{
 					nogui = true;
 					this.sendToConsole("Running SRGSRC in silent/console mode.");
-				}
-				else
+				} else
 				{
+					nogui = false;
 					this.sendToConsole("You must use the -a argument to run this tool in console mode.");
 				}
 			}
 
-			builder.append("[" + i + "][" + arg + "] ");
+			builder.append("[Index:" + i + "][" + arg + "] ");
 		}
 
-		this.sendToConsole("Provided Arguments: " + builder.toString());
+		if (args.length > 0)
+		{
+			this.sendToConsole("Provided Arguments: " + builder.toString());
+		}
 
 		if (!nogui)
 		{
@@ -64,7 +81,7 @@ public class Loader
 
 	public void sendToConsole(String str)
 	{
-		if (!nogui)
+		if (!nogui && mainInterface != null)
 		{
 			this.mainInterface.getConsoleOutput().append(str + "\n");
 		}
