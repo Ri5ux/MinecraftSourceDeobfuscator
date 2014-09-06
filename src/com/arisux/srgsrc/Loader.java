@@ -1,6 +1,5 @@
 package com.arisux.srgsrc;
 
-
 public class Loader
 {
 	private FrameMain mainInterface;
@@ -27,14 +26,21 @@ public class Loader
 
 			if (arg.equals("-nogui"))
 			{
-				nogui = true;
-				System.out.println("Running SRGSRC in silent/console mode.");
+				if (auto)
+				{
+					nogui = true;
+					this.sendToConsole("Running SRGSRC in silent/console mode.");
+				}
+				else
+				{
+					this.sendToConsole("You must use the -a argument to run this tool in console mode.");
+				}
 			}
 
 			builder.append("[" + i + "][" + arg + "] ");
 		}
 
-		System.out.println("Provided Arguments: " + builder.toString());
+		this.sendToConsole("Provided Arguments: " + builder.toString());
 
 		if (!nogui)
 		{
@@ -55,7 +61,7 @@ public class Loader
 			(remapper = new Remapper(this, this.getSrgLocation(), this.getSrcLocation())).start();
 		}
 	}
-	
+
 	public void sendToConsole(String str)
 	{
 		if (!nogui)
