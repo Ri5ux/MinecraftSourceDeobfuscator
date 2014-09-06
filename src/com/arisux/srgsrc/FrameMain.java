@@ -15,6 +15,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.UIManager;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -34,13 +35,20 @@ public class FrameMain extends JFrame
 
     public FrameMain()
     {
-    	super("SRGSRC - Minecraft Coder Pack Tool (Convert Java Sources from SRG to SRC)");
+    	super("SRGSRC");
     	
         this.setSize(dimensions);
         this.setBackground(Color.WHITE);
         this.setLayout(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+        try
+	{
+		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+	} catch (Exception e)
+	{
+		e.printStackTrace();
+	} 
+        
         {
 	        srgInputButton = new JButton("...");
 	        srgInputButton.addActionListener(new ActionListener()
