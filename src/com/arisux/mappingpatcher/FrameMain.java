@@ -162,7 +162,7 @@ public class FrameMain extends JFrame
 
 					MappingPatcher.loader().setOutputLocation(openFileOutput.getSelectedFile().getPath().toString());
 
-					outputInputButton.setText(MappingPatcher.loader().getSrcLocation());
+					outputInputField.setText(MappingPatcher.loader().getSrcLocation());
 				}
 			});
 
