@@ -1,7 +1,4 @@
 .metadata
-.classpath
-.project
 Thumbs.db
 bin
 launch
-!eclipse
