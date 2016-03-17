@@ -162,7 +162,7 @@ public class FrameMain extends JFrame
 
 					MappingPatcher.loader().setOutputLocation(openFileOutput.getSelectedFile().getPath().toString());
 
-					outputInputField.setText(MappingPatcher.loader().getSrcLocation());
+					outputInputField.setText(MappingPatcher.loader().getOutputLocation());
 				}
 			});
 
@@ -248,19 +248,19 @@ public class FrameMain extends JFrame
 				@Override
 				public void insertUpdate(DocumentEvent de)
 				{
-					MappingPatcher.loader().setSrcLocation(outputInputField.getText());
+					MappingPatcher.loader().setOutputLocation(outputInputField.getText());
 				}
 
 				@Override
 				public void removeUpdate(DocumentEvent de)
 				{
-					MappingPatcher.loader().setSrcLocation(outputInputField.getText());
+					MappingPatcher.loader().setOutputLocation(outputInputField.getText());
 				}
 
 				@Override
 				public void changedUpdate(DocumentEvent de)
 				{
-					MappingPatcher.loader().setSrcLocation(outputInputField.getText());
+					MappingPatcher.loader().setOutputLocation(outputInputField.getText());
 				}
 			});
 		}

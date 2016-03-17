@@ -78,7 +78,7 @@ public class Loader
 		if (this.getMappingsLocation() != null && this.getSrcLocation() != null)
 		{
 			this.sendToConsole("Preparing to apply mappings to '" + this.getSrcLocation() + "' from '" + this.getMappingsLocation() + "'");
-			(remapper = new Remapper(this, this.getMappingsLocation(), this.getSrcLocation())).start();
+			(remapper = new Remapper(this)).start();
 		}
 	}
 

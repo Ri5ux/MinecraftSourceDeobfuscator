@@ -17,22 +17,20 @@ import au.com.bytecode.opencsv.CSVReader;
 
 public class Remapper extends Thread implements Runnable
 {
-	private String srg, src, contents;
-	private boolean processingFields;
+	private String contents;
 	private Loader loader;
 
-	public Remapper(Loader loader, String srg, String src)
+	public Remapper(Loader loader)
 	{
 		this.loader = loader;
-		this.setSrgDir(srg);
-		this.setSrcDir(src);
 	}
 
 	@Override
 	public void run()
 	{
 		if (!this.loader.nogui) this.loader.getMainInterface().getConsoleOutput().setText(null);
-		(new File(getSrcOutDir())).mkdirs();
+		
+		(new File(loader.getOutputLocation())).mkdirs();
 
 		try
 		{
@@ -45,9 +43,10 @@ public class Remapper extends Thread implements Runnable
 
 	public boolean processSources() throws IOException
 	{
-		File srcDir = new File(getSrcDir());
-		File csvDirFields = new File(getSrgDir() + "\\fields.csv");
-		File csvDirMethods = new File(getSrgDir() + "\\methods.csv");
+		File srcDir = new File(loader.getSrcLocation());
+		File csvDirFields = new File(loader.getMappingsLocation() + "\\fields.csv");
+		File csvDirParameters = new File(loader.getMappingsLocation() + "\\params.csv");
+		File csvDirMethods = new File(loader.getMappingsLocation() + "\\methods.csv");
 
 		if (csvDirFields.exists())
 		{
@@ -55,6 +54,15 @@ public class Remapper extends Thread implements Runnable
 		} else
 		{
 			loader.sendToConsole("Could not load mapped fields from '" + csvDirFields + "'. File does not exist.");
+			return false;
+		}
+
+		if (csvDirParameters.exists())
+		{
+			loader.sendToConsole("Loading mapped parameters from '" + csvDirParameters + "'");
+		} else
+		{
+			loader.sendToConsole("Could not load mapped parameters from '" + csvDirParameters + "'. File does not exist.");
 			return false;
 		}
 
@@ -69,11 +77,11 @@ public class Remapper extends Thread implements Runnable
 
 		if (!srcDir.exists())
 		{
-			loader.sendToConsole("Could not sources from '" + srcDir + "'. Directory does not exist.");
+			loader.sendToConsole("Could not load sources from '" + srcDir + "'. Directory does not exist.");
 			return false;
 		}
 
-		List<File> sources = getJavaSourcesInDir(getSrcDir());
+		List<File> sources = getJavaSourcesInDir(loader.getSrcLocation());
 
 		if (sources.size() <= 0)
 		{
@@ -82,6 +90,7 @@ public class Remapper extends Thread implements Runnable
 		}
 
 		CSVReader srgReaderFields = new CSVReader(new FileReader(csvDirFields));
+		CSVReader srgReaderParameters = new CSVReader(new FileReader(csvDirParameters));
 		CSVReader srgReaderMethods = new CSVReader(new FileReader(csvDirMethods));
 
 		int lineNum = 0;
@@ -91,14 +100,15 @@ public class Remapper extends Thread implements Runnable
 			lineNum++;
 
 			loader.sendToConsole("[LOAD] " + file.getPath());
-			loader.sendToConsole("[SAVE] " + (file.getPath().replace(getSrcDir(), getSrcOutDir())));
+			loader.sendToConsole("[SAVE] " + (file.getPath().replace(loader.getSrcLocation(), loader.getOutputLocation())));
 
 			contents = readFile(file.getPath(), Charset.defaultCharset());
 
 			remapFields(file, srgReaderFields);
+			remapParameters(file, srgReaderParameters);
 			remapMethods(file, srgReaderMethods);
 
-			saveContentsToFile((file.getPath().replace(getSrcDir(), getSrcOutDir())), contents);
+			saveContentsToFile((file.getPath().replace(loader.getSrcLocation(), loader.getOutputLocation())), contents);
 
 			final float percent = ((float) lineNum / (float) sources.size()) * 100F;
 			loader.sendToConsole("[Progress] " + (double) percent + "%");
@@ -128,8 +138,22 @@ public class Remapper extends Thread implements Runnable
 		{
 			if (contents.contains(field[0]))
 			{
-				loader.sendToConsole("[" + source.getName() + "] Source contains old field SRG name '" + field[0] + "', should be '" + field[1] + "'");
+				loader.sendToConsole("[" + source.getName() + "] Source class contains old field name '" + field[0] + "', should be '" + field[1] + "'");
 				this.contents = contents.replaceAll(field[0], field[1]);
+			}
+		}
+	}
+	
+	public void remapParameters(File source, CSVReader srgReader) throws IOException
+	{
+		List<String[]> parameters = srgReader.readAll();
+
+		for (String[] parameter : parameters)
+		{
+			if (contents.contains(parameter[0]))
+			{
+				loader.sendToConsole("[" + source.getName() + "] Source class contains old parameter name '" + parameter[0] + "', should be '" + parameter[1] + "'");
+				this.contents = contents.replaceAll(parameter[0], parameter[1]);
 			}
 		}
 	}
@@ -138,15 +162,11 @@ public class Remapper extends Thread implements Runnable
 	{
 		List<String[]> methods = srgReader.readAll();
 
-		int lineNum = 0;
-
 		for (String[] method : methods)
 		{
-			lineNum++;
-
 			if (contents.contains(method[0]))
 			{
-				loader.sendToConsole("[" + source.getName() + "] Source contains old method SRG name '" + method[0] + "', should be '" + method[1] + "'");
+				loader.sendToConsole("[" + source.getName() + "] Source class contains old method name '" + method[0] + "', should be '" + method[1] + "'");
 				this.contents = contents.replaceAll(method[0], method[1]);
 			}
 		}
@@ -221,30 +241,5 @@ public class Remapper extends Thread implements Runnable
 	{
 		byte[] encoded = Files.readAllBytes(Paths.get(path));
 		return encoding.decode(ByteBuffer.wrap(encoded)).toString();
-	}
-
-	public String getSrgDir()
-	{
-		return srg;
-	}
-
-	public void setSrgDir(String srg)
-	{
-		this.srg = srg;
-	}
-
-	public String getSrcDir()
-	{
-		return src;
-	}
-
-	public void setSrcDir(String src)
-	{
-		this.src = src;
-	}
-
-	public String getSrcOutDir()
-	{
-		return src + "\\..\\output";
 	}
 }
