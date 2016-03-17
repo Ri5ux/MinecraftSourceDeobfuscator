@@ -194,7 +194,7 @@ public class FrameMain extends JFrame
 
 		{
 			labelCopyright = new JLabel("COPYRIGHT");
-			labelCopyright.setText("Copyright \u00a9 2014 Arisux - http://arisux.x10.mx/");
+			labelCopyright.setText("Copyright \u00a9 2016 Arisux Technology Group - http://arisux.com/");
 			labelCopyright.setSize(this.dimensions.width - 25, 26);
 			labelCopyright.setLocation(10, this.dimensions.height - 62);
 		}
