@@ -1,4 +1,4 @@
-package com.arisux.srgsrc;
+package com.arisux.mappingpatcher;
 
 public class Loader
 {
@@ -6,10 +6,13 @@ public class Loader
 	private Remapper remapper;
 	private boolean auto = false;
 	public boolean nogui = false;
-	private String srgLocation = ".\\srg\\", srcLocation = ".\\src\\";
+	private String mappingsLocation = "mappings\\";
+	private String srcLocation = "src\\";
+	private String outputLocation = "output\\";
 
 	public Loader(String[] args) throws Exception
 	{
+		MappingPatcher.setLoader(this);
 		StringBuilder builder = new StringBuilder();
 
 		for (int i = 0; i < args.length; i++)
@@ -18,7 +21,7 @@ public class Loader
 			
 			if (arg.equals("-help"))
 			{
-				this.sendToConsole("SRGSRC Mod Development Tool - Copyright (C) 2014 Arisux");
+				this.sendToConsole("MCP Mapping Patcher");
 				this.sendToConsole("SYNTAX: -a <SRG DIRECTORY> <SRC DIRECTORY> (Auto runs the tool with the provided directories)");
 				this.sendToConsole("SYNTAX: -nogui (Runs the tool in console mode)");
 				this.sendToConsole("SYNTAX: -help (Shows help)");
@@ -30,7 +33,7 @@ public class Loader
 				if (args.length >= 3)
 				{
 					this.auto = true;
-					this.srgLocation = args[i + 1];
+					this.mappingsLocation = args[i + 1];
 					this.srcLocation = args[i + 2];
 				} else
 				{
@@ -43,7 +46,7 @@ public class Loader
 				if (auto)
 				{
 					nogui = true;
-					this.sendToConsole("Running SRGSRC in silent/console mode.");
+					this.sendToConsole("Running in silent/console mode.");
 				} else
 				{
 					nogui = false;
@@ -61,7 +64,7 @@ public class Loader
 
 		if (!nogui)
 		{
-			this.mainInterface = new FrameMain(this);
+			this.mainInterface = new FrameMain();
 		}
 
 		if (auto)
@@ -72,10 +75,10 @@ public class Loader
 
 	public void run()
 	{
-		if (this.getSrgLocation() != null && this.getSrcLocation() != null)
+		if (this.getMappingsLocation() != null && this.getSrcLocation() != null)
 		{
-			this.sendToConsole("Preparing to apply mappings to '" + this.getSrcLocation() + "' from '" + this.getSrgLocation() + "'");
-			(remapper = new Remapper(this, this.getSrgLocation(), this.getSrcLocation())).start();
+			this.sendToConsole("Preparing to apply mappings to '" + this.getSrcLocation() + "' from '" + this.getMappingsLocation() + "'");
+			(remapper = new Remapper(this, this.getMappingsLocation(), this.getSrcLocation())).start();
 		}
 	}
 
@@ -108,9 +111,9 @@ public class Loader
 		return srcLocation;
 	}
 
-	public String getSrgLocation()
+	public String getMappingsLocation()
 	{
-		return srgLocation;
+		return mappingsLocation;
 	}
 
 	public void setSrcLocation(String srcLocation)
@@ -118,8 +121,18 @@ public class Loader
 		this.srcLocation = srcLocation;
 	}
 
-	public void setSrgLocation(String srgLocation)
+	public void setMappingsLocation(String srgLocation)
 	{
-		this.srgLocation = srgLocation;
+		this.mappingsLocation = srgLocation;
+	}
+
+	public String getOutputLocation()
+	{
+		return outputLocation;
+	}
+
+	public void setOutputLocation(String outputLocation)
+	{
+		this.outputLocation = outputLocation;
 	}
 }

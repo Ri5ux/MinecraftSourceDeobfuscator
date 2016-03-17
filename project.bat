@@ -2,8 +2,8 @@
 TITLE=MCPMappingPatcher Build Script
 SET WORKSPACE=eclipse
 SET LIBRARIES="bin\\"
-SET CLASSPATH="com.arisux.srgsrc.SRGSRC"
-SET JARNAME=mcpmappingpatcher.jar
+SET CLASSPATH="com.arisux.mappingpatcher.MappingPatcher"
+SET JARNAME=mappingpatcher.jar
 SET PAR1=%1
 
 IF '%PAR1%'=='setupWorkspace' GOTO :SETUP

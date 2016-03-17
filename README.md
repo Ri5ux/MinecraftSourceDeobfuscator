@@ -1,4 +1,4 @@
-SRGSRC is a Minecraft modding tool for developers that use the Minecraft Coder Pack and/or Minecraft Forge. This tool takes a selected directory of java source files and remaps any known SRG names into the correctly mapped names.
+MCPMappingPatcher is a tool for Minecraft developers that correctly remaps the mappings in a selected set of source files.
 
 Program Arguments
 

@@ -1,4 +1,4 @@
-package com.arisux.srgsrc;
+package com.arisux.mappingpatcher;
 
 import java.io.File;
 import java.io.FileReader;
