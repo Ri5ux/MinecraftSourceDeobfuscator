@@ -1,9 +1,15 @@
 package com.arisux.mappingpatcher;
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -25,10 +31,10 @@ import javax.swing.event.DocumentListener;
 public class FrameMain extends JFrame
 {
 	private static final long 		serialVersionUID 	= 1872799003418324788L;
-	private JButton 				mappingInputButton;
-	private JButton 				srcInputButton;
-	private JButton 				outputInputButton;
-	private JButton 				processButton;
+	private CButton 				mappingInputButton;
+	private CButton 				srcInputButton;
+	private CButton 				outputInputButton;
+	private CButton 				processButton;
 	private JTextField 				mappingInputField;
 	private JTextField 				srcInputField;
 	private JTextField 				outputInputField;
@@ -37,7 +43,44 @@ public class FrameMain extends JFrame
 	private JTextArea 				consoleOutput;
 	private JScrollPane 			scrollConsolePane;
 	private Dimension 				dimensions 			= new Dimension(860, 480);
+	private Font					segoeUI				= new Font ("Segoe UI Light", 0, 14);
+	private Font					segoeUISmall		= new Font ("Segoe UI Light", 0, 10);
 
+	class CButton extends JButton
+	{
+		private static final long serialVersionUID = -6231067976412186050L;
+		BasicStroke basicStroke = new BasicStroke(2.0f);
+
+		public CButton(String txt)
+		{
+			super(txt);
+			setForeground(Color.WHITE);
+			setFont(segoeUI);
+			setContentAreaFilled(false);
+			setCursor(new Cursor(Cursor.HAND_CURSOR));
+			setMargin(new Insets(-2,8,1,10));
+		}
+
+		@Override
+		protected void paintComponent(Graphics g)
+		{
+			Graphics2D g2d = (Graphics2D) g.create();
+			setForeground(Color.white);
+			g2d.setColor(new Color(0x444444));
+			g2d.fillRect(0, 0, getWidth() - 1, getHeight() - 1);
+			
+			if (getModel().isRollover())
+			{
+			}
+			else
+			{
+			}
+			g2d.dispose();
+
+			super.paintComponent(g);
+		}
+	}
+	
 	public FrameMain()
 	{
 		super("MCP Mapping Patcher");
@@ -75,9 +118,21 @@ public class FrameMain extends JFrame
         
 	    JPanel sectionSouth = new JPanel();
         this.getContentPane().add(sectionSouth, BorderLayout.SOUTH);
-        sectionSouth.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 1));
+        sectionSouth.setLayout(new BorderLayout());
         sectionSouth.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));
         sectionSouth.setBackground(Color.white);
+        
+	    JPanel sectionSouthEast = new JPanel();
+	    sectionSouth.add(sectionSouthEast, BorderLayout.EAST);
+        sectionSouthEast.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 1));
+        sectionSouthEast.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));
+        sectionSouthEast.setBackground(Color.white);
+        
+	    JPanel sectionSouthWest = new JPanel();
+	    sectionSouth.add(sectionSouthWest, BorderLayout.WEST);
+        sectionSouthWest.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 1));
+        sectionSouthWest.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));
+        sectionSouthWest.setBackground(Color.white);
 
 	    JPanel sectionWest = new JPanel();
         this.getContentPane().add(sectionWest, BorderLayout.WEST);
@@ -98,7 +153,7 @@ public class FrameMain extends JFrame
 		}
 
 		{
-			mappingInputButton = new JButton("...");
+			mappingInputButton = new CButton("...");
 			mappingInputButton.setBackground(Color.white);
 			mappingInputButton.addActionListener(new ActionListener()
 			{
@@ -122,7 +177,7 @@ public class FrameMain extends JFrame
 		}
 
 		{
-			srcInputButton = new JButton("...");
+			srcInputButton = new CButton("...");
 			srcInputButton.setBackground(Color.white);
 			srcInputButton.addActionListener(new ActionListener()
 			{
@@ -146,7 +201,7 @@ public class FrameMain extends JFrame
 		}
 
 		{
-			outputInputButton = new JButton("...");
+			outputInputButton = new CButton("...");
 			outputInputButton.setBackground(Color.white);
 			outputInputButton.addActionListener(new ActionListener()
 			{
@@ -170,7 +225,7 @@ public class FrameMain extends JFrame
 		}
 
 		{
-			processButton = new JButton("Run");
+			processButton = new CButton("Run");
 			processButton.setBackground(Color.white);
 			processButton.addActionListener(new ActionListener()
 			{
@@ -185,9 +240,12 @@ public class FrameMain extends JFrame
 
 		//Input Fields
 		JLabel labelMappings = new JLabel("Mappings");
+		labelMappings.setFont(segoeUI);
 		{
 			mappingInputField = new JTextField(MappingPatcher.loader().getMappingsLocation());
 			mappingInputField.setPreferredSize(new Dimension(700, 20));
+			mappingInputField.setFont(segoeUI);
+			
 			mappingInputField.getDocument().addDocumentListener(new DocumentListener()
 			{
 				@Override
@@ -211,9 +269,11 @@ public class FrameMain extends JFrame
 		}
 
 		JLabel labelSource = new JLabel("Sources");
+		labelSource.setFont(segoeUI);
 		{
 			srcInputField = new JTextField(MappingPatcher.loader().getSrcLocation());
 			srcInputField.setPreferredSize(new Dimension(700, 20));
+			srcInputField.setFont(segoeUI);
 
 			srcInputField.getDocument().addDocumentListener(new DocumentListener()
 			{
@@ -238,10 +298,12 @@ public class FrameMain extends JFrame
 		}
 
 		JLabel labelOutput = new JLabel("Output");
+		labelOutput.setFont(segoeUI);
 		{
 			outputInputField = new JTextField(MappingPatcher.loader().getSrcLocation());
 			outputInputField.setPreferredSize(new Dimension(700, 20));
 			outputInputField.setText(MappingPatcher.loader().getOutputLocation());
+			outputInputField.setFont(segoeUI);
 
 			outputInputField.getDocument().addDocumentListener(new DocumentListener()
 			{
@@ -276,13 +338,13 @@ public class FrameMain extends JFrame
 			labelPercentage = new JLabel("PERCENT");
 			labelPercentage.setText(progressBar.getPercentComplete() + "%");
 			labelPercentage.setSize(this.dimensions.width - 25, 20);
+			labelPercentage.setFont(segoeUI);
 		}
 
-		{
-			JLabel labelCopyright = new JLabel("WATERMARK");
-			labelCopyright.setText(MappingPatcher.WATERMARK);
-			labelCopyright.setSize(this.dimensions.width - 25, 20);
-		}
+		JLabel labelCopyright = new JLabel("WATERMARK");
+		labelCopyright.setText(MappingPatcher.WATERMARK);
+		labelCopyright.setSize(this.dimensions.width - 25, 20);
+		labelCopyright.setFont(segoeUISmall);
 
 		{
 			setConsoleOutput(new JTextArea());
@@ -290,12 +352,16 @@ public class FrameMain extends JFrame
 			getConsoleOutput().setBorder(BorderFactory.createLineBorder(new Color(150, 150, 150)));
 			getConsoleOutput().setAutoscrolls(true);
 			getConsoleOutput().setBackground(Color.white);
+			getConsoleOutput().setFont(segoeUI);
+			getConsoleOutput().setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+			getConsoleOutput().setBackground(new Color(248, 248, 250));
 			
 			scrollConsolePane = new JScrollPane(getConsoleOutput());
 			scrollConsolePane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 			scrollConsolePane.setSize(this.dimensions.width - 25, this.dimensions.height - 185);
 			scrollConsolePane.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 0));
 			scrollConsolePane.setBackground(Color.white);
+			scrollConsolePane.setAutoscrolls(true);
 		}
 
 		sectionNorth1.add(labelMappings);
@@ -310,10 +376,11 @@ public class FrameMain extends JFrame
 		sectionNorth3.add(outputInputField);
 		sectionNorth3.add(outputInputButton);
 		
-		sectionSouth.add(processButton);
-		sectionSouth.add(labelPercentage);
-		sectionSouth.add(progressBar);
-//		this.add(labelCopyright);
+		sectionSouthWest.add(processButton);
+		sectionSouthWest.add(labelPercentage);
+		sectionSouthWest.add(progressBar);
+		sectionSouthEast.add(labelCopyright);
+		
 		sectionCenter.add(scrollConsolePane);
 
 		this.setLocationByPlatform(true);

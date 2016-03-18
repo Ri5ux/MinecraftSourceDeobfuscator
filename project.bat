@@ -2,7 +2,7 @@
 TITLE=MCPMappingPatcher Build Script
 SET WORKSPACE=eclipse
 SET LIBRARIES="bin\\"
-SET CLASSPATH="com.arisux.mappingpatcher.MappingPatcher"
+SET CLASSPATH=com.arisux.mappingpatcher.MappingPatcher
 SET JARNAME=mappingpatcher.jar
 SET PAR1=%1
 
@@ -12,6 +12,7 @@ IF '%PAR1%'=='runOnly' GOTO :RUNONLY
 IF '%PAR1%'=='build' GOTO :BUILD
 IF '%PAR1%'=='clean' GOTO :CLEAN
 IF '%PAR1%'=='cleanup' GOTO :CLEAN
+IF '%PAR1%'=='jar' GOTO :COMPILEJAR
 IF NOT '%PAR1%'=='' GOTO :INVALIDPARAMETER
 
 :NOPARAMETERS
@@ -30,6 +31,7 @@ ECHO run
 ECHO runOnly
 ECHO clean
 ECHO cleanup
+ECHO jar
 PAUSE
 GOTO :END
 
@@ -83,6 +85,18 @@ GOTO :END
 :RUNONLY
 ECHO Running the project...
 START JAVA -cp %LIBRARIES% %CLASSPATH%
+GOTO :END
+
+:COMPILEJAR
+CALL :BUILD
+ECHO Manifest-Version: 1.0 >>tmp
+ECHO Main-Class: %CLASSPATH% >>tmp
+
+CD bin
+JAR cfm ../%JARNAME% ../tmp *
+CD..
+RMDIR /s /q bin
+DEL tmp
 GOTO :END
 
 :END

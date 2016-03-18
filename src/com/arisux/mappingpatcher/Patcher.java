@@ -13,14 +13,13 @@ import java.util.List;
 
 import javax.swing.SwingUtilities;
 
-import au.com.bytecode.opencsv.CSVReader;
+import com.bytecode.opencsv.CSVReader;
 
-public class Remapper extends Thread implements Runnable
+public class Patcher extends Thread implements Runnable
 {
-	private String contents;
 	private Loader loader;
 
-	public Remapper(Loader loader)
+	public Patcher(Loader loader)
 	{
 		this.loader = loader;
 	}
@@ -28,14 +27,16 @@ public class Remapper extends Thread implements Runnable
 	@Override
 	public void run()
 	{
-		if (!this.loader.nogui) this.loader.getMainInterface().getConsoleOutput().setText(null);
-		
+		if (!this.loader.nogui)
+			this.loader.getMainInterface().getConsoleOutput().setText(null);
+
 		(new File(loader.getOutputLocation())).mkdirs();
 
 		try
 		{
 			processSources();
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
@@ -43,37 +44,15 @@ public class Remapper extends Thread implements Runnable
 
 	public boolean processSources() throws IOException
 	{
+		File outputDir = new File(loader.getOutputLocation());
 		File srcDir = new File(loader.getSrcLocation());
 		File csvDirFields = new File(loader.getMappingsLocation() + "\\fields.csv");
 		File csvDirParameters = new File(loader.getMappingsLocation() + "\\params.csv");
 		File csvDirMethods = new File(loader.getMappingsLocation() + "\\methods.csv");
 
-		if (csvDirFields.exists())
-		{
-			loader.sendToConsole("Loading mapped fields from '" + csvDirFields + "'");
-		} else
-		{
-			loader.sendToConsole("Could not load mapped fields from '" + csvDirFields + "'. File does not exist.");
-			return false;
-		}
-
-		if (csvDirParameters.exists())
-		{
-			loader.sendToConsole("Loading mapped parameters from '" + csvDirParameters + "'");
-		} else
-		{
-			loader.sendToConsole("Could not load mapped parameters from '" + csvDirParameters + "'. File does not exist.");
-			return false;
-		}
-
-		if (csvDirMethods.exists())
-		{
-			loader.sendToConsole("Loading mapped methods from '" + csvDirMethods + "'");
-		} else
-		{
-			loader.sendToConsole("Could not load mapped methods from '" + csvDirMethods + "'. File does not exist.");
-			return false;
-		}
+		mappingFileCheck(csvDirFields, MappingType.FIELD);
+		mappingFileCheck(csvDirFields, MappingType.PARAMETER);
+		mappingFileCheck(csvDirFields, MappingType.METHOD);
 
 		if (!srcDir.exists())
 		{
@@ -93,22 +72,31 @@ public class Remapper extends Thread implements Runnable
 		CSVReader srgReaderParameters = new CSVReader(new FileReader(csvDirParameters));
 		CSVReader srgReaderMethods = new CSVReader(new FileReader(csvDirMethods));
 
+		List<String[]> mappingsFields = srgReaderFields.readAll();
+		List<String[]> mappingsParameters = srgReaderParameters.readAll();
+		List<String[]> mappingsMethods = srgReaderMethods.readAll();
+		
+		srgReaderFields.close();
+		srgReaderParameters.close();
+		srgReaderMethods.close();
+		
 		int lineNum = 0;
 
 		for (File file : sources)
 		{
 			lineNum++;
+			File fileSavePath = new File((file.getPath().replace(srcDir.getPath(), outputDir.getPath())));
 
-			loader.sendToConsole("[LOAD] " + file.getPath());
-			loader.sendToConsole("[SAVE] " + (file.getPath().replace(loader.getSrcLocation(), loader.getOutputLocation())));
+			loader.sendToConsole("[LOAD] " + file.getAbsolutePath());
+			loader.sendToConsole("[SAVE] " + fileSavePath.getAbsolutePath());
 
-			contents = readFile(file.getPath(), Charset.defaultCharset());
+			String contents = readFile(file.getPath(), Charset.defaultCharset());
 
-			remapFields(file, srgReaderFields);
-			remapParameters(file, srgReaderParameters);
-			remapMethods(file, srgReaderMethods);
+			contents = remap(file, mappingsFields, MappingType.FIELD, contents);
+			contents = remap(file, mappingsParameters, MappingType.PARAMETER, contents);
+			contents = remap(file, mappingsMethods, MappingType.METHOD, contents);
 
-			saveContentsToFile((file.getPath().replace(loader.getSrcLocation(), loader.getOutputLocation())), contents);
+			saveContentsToFile(fileSavePath, contents);
 
 			final float percent = ((float) lineNum / (float) sources.size()) * 100F;
 			loader.sendToConsole("[Progress] " + (double) percent + "%");
@@ -124,52 +112,39 @@ public class Remapper extends Thread implements Runnable
 				});
 			}
 		}
-		srgReaderFields.close();
-		srgReaderMethods.close();
-
+		
 		return true;
 	}
 
-	public void remapFields(File source, CSVReader srgReader) throws IOException
+	public boolean mappingFileCheck(File csvDir, MappingType type)
 	{
-		List<String[]> fields = srgReader.readAll();
-
-		for (String[] field : fields)
+		if (csvDir.exists())
 		{
-			if (contents.contains(field[0]))
-			{
-				loader.sendToConsole("[" + source.getName() + "] Source class contains old field name '" + field[0] + "', should be '" + field[1] + "'");
-				this.contents = contents.replaceAll(field[0], field[1]);
-			}
+			loader.sendToConsole("Loading " + type.getName() + " mappings from '" + csvDir + "'");
+			return true;
 		}
-	}
-	
-	public void remapParameters(File source, CSVReader srgReader) throws IOException
-	{
-		List<String[]> parameters = srgReader.readAll();
 
-		for (String[] parameter : parameters)
-		{
-			if (contents.contains(parameter[0]))
-			{
-				loader.sendToConsole("[" + source.getName() + "] Source class contains old parameter name '" + parameter[0] + "', should be '" + parameter[1] + "'");
-				this.contents = contents.replaceAll(parameter[0], parameter[1]);
-			}
-		}
+		loader.sendToConsole("Could not load " + type.getName() + " mappings from '" + csvDir + "'. File does not exist.");
+		return false;
 	}
 
-	public void remapMethods(File source, CSVReader srgReader) throws IOException
+	public String remap(File source, List<String[]> mappings, MappingType type, String sourceContents) throws IOException
 	{
-		List<String[]> methods = srgReader.readAll();
-
-		for (String[] method : methods)
+		String newContents = sourceContents;
+		
+		for (String[] mapping : mappings)
 		{
-			if (contents.contains(method[0]))
+			String srgName = mapping[0];
+			String mcpName = mapping[1];
+
+			if (newContents.contains(srgName))
 			{
-				loader.sendToConsole("[" + source.getName() + "] Source class contains old method name '" + method[0] + "', should be '" + method[1] + "'");
-				this.contents = contents.replaceAll(method[0], method[1]);
+				loader.sendToConsole("[" + source.getName() + "] Source class contains old " + type.getName() + " name '" + srgName + "', should be '" + mcpName + "'");
+				newContents = newContents.replaceAll(srgName, mcpName);
 			}
 		}
+		
+		return newContents;
 	}
 
 	public List getFilesInDirectory(String dir)
@@ -188,7 +163,8 @@ public class Remapper extends Thread implements Runnable
 					allFiles.addAll(getFilesInDirectory(file.getPath()));
 				}
 			}
-		} else
+		}
+		else
 		{
 			loader.sendToConsole("Directory '" + dir + "' does not exist. Please provide a valid directory.");
 			return null;
@@ -212,12 +188,10 @@ public class Remapper extends Thread implements Runnable
 		return javaSources;
 	}
 
-	public void saveContentsToFile(String filename, String contents)
+	public void saveContentsToFile(File file, String contents)
 	{
 		try
 		{
-			File file = new File(filename);
-
 			if (!file.exists())
 			{
 				if (!file.isDirectory())
@@ -231,7 +205,8 @@ public class Remapper extends Thread implements Runnable
 			PrintWriter writer = new PrintWriter(file.getPath(), "UTF-8");
 			writer.print(contents);
 			writer.close();
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}

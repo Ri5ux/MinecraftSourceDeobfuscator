@@ -3,7 +3,7 @@ package com.arisux.mappingpatcher;
 public class Loader
 {
 	private FrameMain mainInterface;
-	private Remapper remapper;
+	private Patcher remapper;
 	private boolean auto = false;
 	public boolean nogui = false;
 	private String mappingsLocation = "mappings\\";
@@ -78,7 +78,7 @@ public class Loader
 		if (this.getMappingsLocation() != null && this.getSrcLocation() != null)
 		{
 			this.sendToConsole("Preparing to apply mappings to '" + this.getSrcLocation() + "' from '" + this.getMappingsLocation() + "'");
-			(remapper = new Remapper(this)).start();
+			(remapper = new Patcher(this)).start();
 		}
 	}
 
@@ -96,7 +96,7 @@ public class Loader
 		return mainInterface;
 	}
 
-	public Remapper getRemapper()
+	public Patcher getRemapper()
 	{
 		return remapper;
 	}

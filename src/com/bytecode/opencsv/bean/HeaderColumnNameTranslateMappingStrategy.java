@@ -1,4 +1,4 @@
-package au.com.bytecode.opencsv.bean;
+package com.bytecode.opencsv.bean;
 import java.util.HashMap;
 import java.util.Map;
 
