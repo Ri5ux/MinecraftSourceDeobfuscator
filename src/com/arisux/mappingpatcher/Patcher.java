@@ -88,7 +88,6 @@ public class Patcher extends Thread implements Runnable
 			File fileSavePath = new File((file.getPath().replace(srcDir.getPath(), outputDir.getPath())));
 
 			loader.sendToConsole("[LOAD] " + file.getAbsolutePath());
-			loader.sendToConsole("[SAVE] " + fileSavePath.getAbsolutePath());
 
 			String contents = readFile(file.getPath(), Charset.defaultCharset());
 
@@ -97,6 +96,7 @@ public class Patcher extends Thread implements Runnable
 			contents = remap(file, mappingsMethods, MappingType.METHOD, contents);
 
 			saveContentsToFile(fileSavePath, contents);
+			loader.sendToConsole("[SAVE] " + fileSavePath.getAbsolutePath());
 
 			final float percent = ((float) lineNum / (float) sources.size()) * 100F;
 			loader.sendToConsole("[Progress] " + (double) percent + "%");
