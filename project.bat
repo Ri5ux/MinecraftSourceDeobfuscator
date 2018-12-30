@@ -1,9 +1,9 @@
 @ECHO OFF
-TITLE=MCPMappingPatcher Build Script
+TITLE=Minecraft Source Deobfusctator Build Script
 SET WORKSPACE=eclipse
 SET LIBRARIES="bin\\"
 SET CLASSPATH=com.arisux.mappingpatcher.MappingPatcher
-SET JARNAME=mappingpatcher.jar
+SET JARNAME=mc-src-deobf.jar
 SET PAR1=%1
 
 IF '%PAR1%'=='setupWorkspace' GOTO :SETUP

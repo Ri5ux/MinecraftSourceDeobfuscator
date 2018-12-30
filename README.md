@@ -1,4 +1,4 @@
-MCPMappingPatcher is a tool for Minecraft developers that correctly remaps the mappings in a selected set of source files.
+MinecraftSourceDeobfuscator is a tool for Minecraft developers that correctly remaps the obfuscated function and field names in a selected set of source files.
 
 Program Arguments
 
@@ -9,4 +9,4 @@ Program Arguments
 -help (Shows help)
 
 EXAMPLE: 
-java -jar srgsrc.jar -a "C:\srg\" "C:\src\" -nogui
+java -jar mc-src-deobf.jar -a "C:\srg\" "C:\src\" -nogui
