@@ -71,7 +71,7 @@ GOTO :END
 :BUILD
 ECHO Building the project...
 IF NOT EXIST bin MKDIR bin
-DEL %JARNAME%
+IF EXIST %JARNAME% DEL %JARNAME%
 DIR /s /B *.java > tmp
 JAVAC -d bin @tmp
 DEL tmp
@@ -97,6 +97,7 @@ JAR cfm ../%JARNAME% ../tmp *
 CD..
 RMDIR /s /q bin
 DEL tmp
+ECHO Done. Artifact location: %JARNAME%
 GOTO :END
 
 :END
