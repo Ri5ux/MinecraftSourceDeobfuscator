@@ -147,7 +147,7 @@ public class Patcher extends Thread implements Runnable
 		return newContents;
 	}
 
-	public List getFilesInDirectory(String dir)
+	public List<File> getFilesInDirectory(String dir)
 	{
 		File[] srcList = (new File(dir)).listFiles();
 		List<File> allFiles = new ArrayList<File>();
