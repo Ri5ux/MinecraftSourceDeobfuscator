@@ -1,9 +1,9 @@
-package com.arisux.mappingpatcher;
+package com.arisux.mcsrcdeobf;
 
-public class MappingPatcher
+public class SourceDeobfuscator
 {
-	public static final String WEBSITE = "http://arisux.com/";
-	public static final String WATERMARK = "Copyright \u00a9 2016 Arisux Technology Group - " + WEBSITE;
+	public static final String WEBSITE = "http://dev.arisux.com/";
+	public static final String WATERMARK = "Copyright \u00a9 2018-2019 ASX - " + WEBSITE;
 	private static Loader loader;
 	
 	public static void main(String[] args)
@@ -25,6 +25,6 @@ public class MappingPatcher
 	
 	public static void setLoader(Loader loader)
 	{
-		MappingPatcher.loader = loader;
+	    SourceDeobfuscator.loader = loader;
 	}
 }

@@ -2,7 +2,7 @@
 TITLE=Minecraft Source Deobfusctator Build Script
 SET WORKSPACE=eclipse
 SET LIBRARIES="bin\\"
-SET CLASSPATH=com.arisux.mappingpatcher.MappingPatcher
+SET CLASSPATH=com.arisux.mcsrcdeobf.SourceDeobfuscator
 SET JARNAME=mc-src-deobf.jar
 SET PAR1=%1
 

@@ -1,4 +1,4 @@
-package com.arisux.mappingpatcher;
+package com.arisux.mcsrcdeobf;
 
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
@@ -83,7 +83,7 @@ public class FrameMain extends JFrame
 	
 	public FrameMain()
 	{
-		super("MCP Mapping Patcher");
+		super("Minecraft Source Deobfuscator");
 		//this.setIconImage(new ImageIcon(this.getClass().getResource("/resources/icon.png")).getImage());
 		
 		this.setSize(dimensions);
@@ -167,9 +167,9 @@ public class FrameMain extends JFrame
 
 					openFileSRG.showOpenDialog(null);
 
-					MappingPatcher.loader().setMappingsLocation(openFileSRG.getSelectedFile().getPath().toString());
+					SourceDeobfuscator.loader().setMappingsLocation(openFileSRG.getSelectedFile().getPath().toString());
 
-					mappingInputField.setText(MappingPatcher.loader().getMappingsLocation());
+					mappingInputField.setText(SourceDeobfuscator.loader().getMappingsLocation());
 				}
 			});
 
@@ -191,9 +191,9 @@ public class FrameMain extends JFrame
 
 					openFileSRC.showOpenDialog(null);
 
-					MappingPatcher.loader().setSrcLocation(openFileSRC.getSelectedFile().getPath().toString());
+					SourceDeobfuscator.loader().setSrcLocation(openFileSRC.getSelectedFile().getPath().toString());
 
-					srcInputField.setText(MappingPatcher.loader().getSrcLocation());
+					srcInputField.setText(SourceDeobfuscator.loader().getSrcLocation());
 				}
 			});
 
@@ -215,9 +215,9 @@ public class FrameMain extends JFrame
 
 					openFileOutput.showOpenDialog(null);
 
-					MappingPatcher.loader().setOutputLocation(openFileOutput.getSelectedFile().getPath().toString());
+					SourceDeobfuscator.loader().setOutputLocation(openFileOutput.getSelectedFile().getPath().toString());
 
-					outputInputField.setText(MappingPatcher.loader().getOutputLocation());
+					outputInputField.setText(SourceDeobfuscator.loader().getOutputLocation());
 				}
 			});
 
@@ -231,7 +231,7 @@ public class FrameMain extends JFrame
 			{
 				public void actionPerformed(ActionEvent e)
 				{
-					MappingPatcher.loader().run();
+					SourceDeobfuscator.loader().run();
 				}
 			});
 
@@ -242,7 +242,7 @@ public class FrameMain extends JFrame
 		JLabel labelMappings = new JLabel("Mappings");
 		labelMappings.setFont(segoeUI);
 		{
-			mappingInputField = new JTextField(MappingPatcher.loader().getMappingsLocation());
+			mappingInputField = new JTextField(SourceDeobfuscator.loader().getMappingsLocation());
 			mappingInputField.setPreferredSize(new Dimension(700, 20));
 			mappingInputField.setFont(segoeUI);
 			
@@ -251,19 +251,19 @@ public class FrameMain extends JFrame
 				@Override
 				public void insertUpdate(DocumentEvent de)
 				{
-					MappingPatcher.loader().setMappingsLocation(mappingInputField.getText());
+					SourceDeobfuscator.loader().setMappingsLocation(mappingInputField.getText());
 				}
 
 				@Override
 				public void removeUpdate(DocumentEvent de)
 				{
-					MappingPatcher.loader().setMappingsLocation(mappingInputField.getText());
+					SourceDeobfuscator.loader().setMappingsLocation(mappingInputField.getText());
 				}
 
 				@Override
 				public void changedUpdate(DocumentEvent de)
 				{
-					MappingPatcher.loader().setMappingsLocation(mappingInputField.getText());
+					SourceDeobfuscator.loader().setMappingsLocation(mappingInputField.getText());
 				}
 			});
 		}
@@ -271,7 +271,7 @@ public class FrameMain extends JFrame
 		JLabel labelSource = new JLabel("Sources");
 		labelSource.setFont(segoeUI);
 		{
-			srcInputField = new JTextField(MappingPatcher.loader().getSrcLocation());
+			srcInputField = new JTextField(SourceDeobfuscator.loader().getSrcLocation());
 			srcInputField.setPreferredSize(new Dimension(700, 20));
 			srcInputField.setFont(segoeUI);
 
@@ -280,19 +280,19 @@ public class FrameMain extends JFrame
 				@Override
 				public void insertUpdate(DocumentEvent de)
 				{
-					MappingPatcher.loader().setSrcLocation(srcInputField.getText());
+					SourceDeobfuscator.loader().setSrcLocation(srcInputField.getText());
 				}
 
 				@Override
 				public void removeUpdate(DocumentEvent de)
 				{
-					MappingPatcher.loader().setSrcLocation(srcInputField.getText());
+					SourceDeobfuscator.loader().setSrcLocation(srcInputField.getText());
 				}
 
 				@Override
 				public void changedUpdate(DocumentEvent de)
 				{
-					MappingPatcher.loader().setSrcLocation(srcInputField.getText());
+					SourceDeobfuscator.loader().setSrcLocation(srcInputField.getText());
 				}
 			});
 		}
@@ -300,9 +300,9 @@ public class FrameMain extends JFrame
 		JLabel labelOutput = new JLabel("Output");
 		labelOutput.setFont(segoeUI);
 		{
-			outputInputField = new JTextField(MappingPatcher.loader().getSrcLocation());
+			outputInputField = new JTextField(SourceDeobfuscator.loader().getSrcLocation());
 			outputInputField.setPreferredSize(new Dimension(700, 20));
-			outputInputField.setText(MappingPatcher.loader().getOutputLocation());
+			outputInputField.setText(SourceDeobfuscator.loader().getOutputLocation());
 			outputInputField.setFont(segoeUI);
 
 			outputInputField.getDocument().addDocumentListener(new DocumentListener()
@@ -310,19 +310,19 @@ public class FrameMain extends JFrame
 				@Override
 				public void insertUpdate(DocumentEvent de)
 				{
-					MappingPatcher.loader().setOutputLocation(outputInputField.getText());
+					SourceDeobfuscator.loader().setOutputLocation(outputInputField.getText());
 				}
 
 				@Override
 				public void removeUpdate(DocumentEvent de)
 				{
-					MappingPatcher.loader().setOutputLocation(outputInputField.getText());
+					SourceDeobfuscator.loader().setOutputLocation(outputInputField.getText());
 				}
 
 				@Override
 				public void changedUpdate(DocumentEvent de)
 				{
-					MappingPatcher.loader().setOutputLocation(outputInputField.getText());
+					SourceDeobfuscator.loader().setOutputLocation(outputInputField.getText());
 				}
 			});
 		}
@@ -342,7 +342,7 @@ public class FrameMain extends JFrame
 		}
 
 		JLabel labelCopyright = new JLabel("WATERMARK");
-		labelCopyright.setText(MappingPatcher.WATERMARK);
+		labelCopyright.setText(SourceDeobfuscator.WATERMARK);
 		labelCopyright.setSize(this.dimensions.width - 25, 20);
 		labelCopyright.setFont(segoeUISmall);
 

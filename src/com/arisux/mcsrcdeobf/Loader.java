@@ -1,4 +1,4 @@
-package com.arisux.mappingpatcher;
+package com.arisux.mcsrcdeobf;
 
 public class Loader
 {
@@ -12,7 +12,7 @@ public class Loader
 
 	public Loader(String[] args) throws Exception
 	{
-		MappingPatcher.setLoader(this);
+		SourceDeobfuscator.setLoader(this);
 		StringBuilder builder = new StringBuilder();
 
 		for (int i = 0; i < args.length; i++)
@@ -21,7 +21,7 @@ public class Loader
 			
 			if (arg.equals("-help"))
 			{
-				this.sendToConsole("MCP Mapping Patcher");
+				this.sendToConsole("Minecraft Source Deobfuscator");
 				this.sendToConsole("SYNTAX: -a <SRG DIRECTORY> <SRC DIRECTORY> (Auto runs the tool with the provided directories)");
 				this.sendToConsole("SYNTAX: -nogui (Runs the tool in console mode)");
 				this.sendToConsole("SYNTAX: -help (Shows help)");

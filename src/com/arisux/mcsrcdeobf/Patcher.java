@@ -1,4 +1,4 @@
-package com.arisux.mappingpatcher;
+package com.arisux.mcsrcdeobf;
 
 import java.io.File;
 import java.io.FileReader;

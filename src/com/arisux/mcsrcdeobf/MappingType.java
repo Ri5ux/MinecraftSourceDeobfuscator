@@ -1,4 +1,4 @@
-package com.arisux.mappingpatcher;
+package com.arisux.mcsrcdeobf;
 
 public enum MappingType
 {
